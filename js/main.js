@@ -14,19 +14,10 @@ const btnClose = callElement("#btnDong")
 const searchUser = callElement("#searchName")
 
 const tbFullName = callElement("#tbTKNV");
+const showUserList = callElement("#tableDanhSach")
 
 
-function UserList(fullname, username, email, password, validate, salary, position, onduty) {
-    this.fullname = fullname
-    this.username = username
-    this.email = email
-    this.password = password
-    this.validate = validate
-    this.salary = salary
-    this.position = position
-    this.onduty = onduty
-}
-
+const addNewUser = new DanhSachNhanVien()
 const addUserToList = () => {
     let newFullName = userFullName.value
     let newUserName = userName.value
@@ -39,9 +30,11 @@ const addUserToList = () => {
 
     if (newFullName && newUserName && newEmail && newPassword && newValidate && newSalary && newPosition && newOnDuty) {
         const newUser = new UserList(newFullName, newUserName, newEmail, newPassword, newValidate, newSalary, newPosition, newOnDuty)
-        localStorage.setItem("UserList", JSON.stringify(newUser))
-        alert("Đã thêm thành công")
-        btnAddUser.setAttribute("data-dismiss", "modal")
+        newUser.totalSalary = newUser.calculateSalary()
+        newUser.rank = newUser.setRank()
+        addNewUser.addUser(newUser)
+        console.log("check addNewUser : ", addNewUser.userList)
+        showUI(addNewUser.userList)
     } else {
         //Check validate username
         if (newUserName === "") {
@@ -132,8 +125,23 @@ const addUserToList = () => {
 }
 btnAddUser.addEventListener("click", addUserToList)
 
-const showUIofUserList = () => {
-    let UserList = JSON.parse(localStorage.getItem("UserList"))
-    console.log("check UserList : ", UserList)
-}
-showUIofUserList()
+// const showUI = (userData) => {
+//     let str = ``
+//     userData.map((user) => {
+//         str += `
+//         <tr>
+//                 <td>${user.username}</td>
+//                 <td>${user.fullname}</td>
+//                 <td>${user.email}</td>
+//                 <td>${user.validate}</td>
+//                 <td>${user.position}</td>
+//                 <td>${user.totalSalary}</td>
+//                 <td>${user.rank}</td>
+//                 <td class="d-flex"> <button onclick = "xoaNV('${user.taiKhoan}')" class="btn btn-danger mx-1">Xoá</button>
+//                  <button onclick = "xemNV('${user.taiKhoan}')" class="btn btn-success mx-1">Xem</button></td>
+//             </tr>
+//         `
+//     })
+//     showUserList.innerHTML = str
+// }
+// showUI()
