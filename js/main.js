@@ -17,6 +17,7 @@ const tbFullName = callElement("#tbTKNV");
 const showUserList = callElement("#tableDanhSach")
 const validation = new Validation()
 const addNewUser = new DanhSachNhanVien()
+validation.changeColor()
 
 const setLocalStorage = (data) => {
     localStorage.setItem('DSNV', JSON.stringify(data))
@@ -34,7 +35,7 @@ const addUserToList = () => {
 
     let isValid = false
 
-    isValid = validation.checkEmpty(newUserName, 'tbTKNV', 'Vui lòng nhập tài khoản') && validation.checkDuplicated(newUserName, 'tbTKNV', 'Username đã tồn tại', addNewUser.userList) && validation.changeColor(isValid, 'tknv')
+    isValid = validation.checkEmpty(newUserName, 'tbTKNV', 'Vui lòng nhập tài khoản', 'tknv') && validation.checkDuplicated(newUserName, 'tbTKNV', 'Username đã tồn tại', addNewUser.userList, 'tknv')
     isValid &= validation.checkEmpty(newFullName, 'tbTen', 'Vui lòng nhập họ và tên')
     isValid &= validation.checkEmpty(newEmail, 'tbEmail', 'Vui lòng nhập email')
     isValid &= validation.checkEmpty(newPassword, 'tbMatKhau', 'Vui lòng nhập mật khẩu')
