@@ -45,6 +45,86 @@ function Validation() {
         }
     };
 
+    this.checkName = function (fullName, id, content, input) {
+        const getElementID = this.domElement(id);
+        const regex = /^[a-zA-Z\s_-àáâãèéêễểềếệìíòóôơớờỡởợõùúưứừửữỳỹđÀÁÂÃÈÉÊẾỀỄỂỆÌÍÒÓÔƠỚỜỞỠỢÕÙÚƯỨỪỬỮỲỸĐ]+$/;
+        if (regex.test(fullName)) {
+            getElementID.style.display = 'none';
+            getElementID.innerHTML = '';
+            this.changeColor(input, true)
+            return true
+        } else {
+            getElementID.style.display = 'block';
+            getElementID.innerHTML = content;
+            this.changeColor(input, false)
+            return false;
+        }
+    }
+
+    this.checkEmail = function (email, id, content, input) {
+        const getElementID = this.domElement(id);
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (regex.test(email)) {
+            getElementID.style.display = 'none';
+            getElementID.innerHTML = '';
+            this.changeColor(input, true)
+            return true
+        } else {
+            getElementID.style.display = 'block';
+            getElementID.innerHTML = content;
+            this.changeColor(input, false)
+            return false;
+        }
+    }
+
+    this.checkPassword = function (password, id, content, input) {
+        const getElementID = this.domElement(id);
+        const regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]).{8,16}$/;
+        if (regex.test(password)) {
+            getElementID.style.display = 'none';
+            getElementID.innerHTML = '';
+            this.changeColor(input, true)
+            return true
+        } else {
+            getElementID.style.display = 'block';
+            getElementID.innerHTML = content;
+            this.changeColor(input, false)
+            return false;
+        }
+    }
+
+    this.checkSalary = function (salary, id, content, input) {
+        const getElementID = this.domElement(id);
+        const regex = /^\d+$/;
+        if (regex.test(salary)) {
+            getElementID.style.display = 'none';
+            getElementID.innerHTML = '';
+            this.changeColor(input, true)
+            return true
+        } else {
+            getElementID.style.display = 'block';
+            getElementID.innerHTML = content;
+            this.changeColor(input, false)
+            return false;
+        }
+    }
+
+    this.checkOnDuty = function (onDuty, id, content, input) {
+        const getElementID = this.domElement(id);
+        const regex = /^(?:1[6-9]\d|200)$/;
+        if (regex.test(onDuty)) {
+            getElementID.style.display = 'none';
+            getElementID.innerHTML = '';
+            this.changeColor(input, true)
+            return true
+        } else {
+            getElementID.style.display = 'block';
+            getElementID.innerHTML = content;
+            this.changeColor(input, false)
+            return false;
+        }
+    }
+
     this.changeColor = function (input, isValid) {
         const getElementID = this.domElement(input);
         if (getElementID) {
