@@ -171,7 +171,8 @@
 
 
 	<!-- The Modal -->
-	<div class="modal fade" id="myModal">
+	<div class="modal fade" id="myModal" data-backdrop="static" tabindex="-1" role="dialog"
+		aria-labelledby="exampleModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
 
@@ -187,8 +188,7 @@
 
 				<!-- Modal body -->
 				<div class="modal-body">
-
-					<form role="form">
+					<form id="form_input" role="form">
 
 						<div class="form-group">
 							<div class="input-group">
@@ -291,6 +291,7 @@
 				<!-- Modal footer -->
 				<div class="modal-footer" id="modal-footer">
 					<button id="btnThemNV" type="button" class="btn btn-success">Thêm người dùng</button>
+					<button id="btnSuaNV" type="button" disabled class="btn btn-success">Lưu chỉnh sửa</button>
 					<button id="btnDong" type="button" class="btn btn-danger" data-dismiss="modal">Đóng</button>
 				</div>
 
@@ -298,10 +299,6 @@
 		</div>
 	</div>
 
-	<!-- The Modal -->
-	<div class="modal fade" id="editModal">
-
-	</div>
 
 	<!-- Bootstrap -->
 	<script src="js/jquery.min.js"></script>
