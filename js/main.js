@@ -11,13 +11,13 @@ const userOnDuty = callElement("#gioLam")
 
 const btnAddUser = callElement("#btnThemNV")
 const btnClose = callElement("#btnDong")
-const searchUser = callElement("#searchName")
+const searchUserInput = callElement("#searchName")
+const searchUserBtn = callElement('#btnTimNV')
 
 const tbFullName = callElement("#tbTKNV");
 const showUserList = callElement("#tableDanhSach")
 const validation = new Validation()
 const userData = new DanhSachNhanVien()
-validation.changeColor()
 
 const setLocalStorage = (data) => {
     localStorage.setItem('DSNV', JSON.stringify(data))
@@ -67,14 +67,8 @@ callElement('#btnDong').addEventListener('click', function () {
     refreshInput('tbChucVu', 'chucvu')
     refreshInput('tbGiolam', 'gioLam')
     callElement('#form_input').reset()
-    userFullName.disabled = false
-    userName.disabled = false
-    userEmail.disabled = false
-    userPassword.disabled = false
-    userDate.disabled = false
-    userSalary.disabled = false
-    userPosition.disabled = false
-    userOnDuty.disabled = false
+    toggleInput(true)
+    toggleButton(false)
 })
 
 const refreshInput = (text, border) => {
@@ -122,8 +116,7 @@ const removeUser = (user) => {
 }
 
 const checkUser = (user) => {
-    callElement('#btnThemNV').setAttribute("disabled", true)
-    callElement('#btnSuaNV').removeAttribute("disabled", true)
+    toggleButton(true)
     let listUserLocalStorage = []
     if (localStorage.getItem('DSNV') !== null) {
         listUserLocalStorage = JSON.parse(localStorage.getItem('DSNV'))
@@ -141,14 +134,7 @@ const checkUser = (user) => {
     userPosition.value = userNeedEdit.position
     userOnDuty.value = userNeedEdit.onduty
 
-    userFullName.disabled = true
-    userName.disabled = true
-    userEmail.disabled = true
-    userPassword.disabled = false
-    userDate.disabled = true
-    userSalary.disabled = false
-    userPosition.disabled = false
-    userOnDuty.disabled = false
+    toggleInput(false)
 
     const btnSuaNV = callElement('#btnSuaNV');
     if (!btnSuaNV.onclick) {
@@ -171,14 +157,66 @@ const checkUser = (user) => {
             alert(`Đã chỉnh sửa thành công nhân viên ${userUpdated.username}`)
             showUI(listUserLocalStorage)
             callElement('#btnDong').click()
-            userFullName.disabled = false
-            userName.disabled = false
-            userEmail.disabled = false
-            userPassword.disabled = false
-            userDate.disabled = false
-            userSalary.disabled = false
-            userPosition.disabled = false
-            userOnDuty.disabled = false
+            toggleInput(true)
         };
     }
 }
+
+const toggleInput = (dieuKien) => {
+    if (dieuKien) {
+        userFullName.disabled = false
+        userName.disabled = false
+        userEmail.disabled = false
+        userPassword.disabled = false
+        userDate.disabled = false
+        userSalary.disabled = false
+        userPosition.disabled = false
+        userOnDuty.disabled = false
+    } else {
+        userFullName.disabled = true
+        userName.disabled = true
+        userEmail.disabled = true
+        userPassword.disabled = false
+        userDate.disabled = true
+        userSalary.disabled = false
+        userPosition.disabled = false
+        userOnDuty.disabled = false
+    }
+}
+
+const toggleButton = (dieuKien) => {
+    if (dieuKien) {
+        callElement('#btnThemNV').setAttribute("disabled", true)
+        callElement('#btnSuaNV').removeAttribute("disabled")
+    } else {
+        callElement('#btnThemNV').removeAttribute("disabled")
+        callElement('#btnSuaNV').setAttribute("disabled", true)
+    }
+
+}
+
+const searchUser = () => {
+    let userSearchContent = searchUserInput.value
+    let listUserLocalStorage = []
+    let newArray = []
+
+    if (localStorage.getItem('DSNV') !== null) {
+        listUserLocalStorage = JSON.parse(localStorage.getItem('DSNV'));
+    }
+
+
+    if (userSearchContent !== '') {
+        const index = userData.indexUser(userSearchContent);
+        const userNeedEdit = listUserLocalStorage[index];
+
+        if (userNeedEdit) {
+            newArray.push(userNeedEdit);
+        }
+    } else {
+        newArray = listUserLocalStorage;
+    }
+
+    showUI(newArray);
+}
+searchUserBtn.addEventListener('click', searchUser)
+searchUserInput.addEventListener('keyup', searchUser)

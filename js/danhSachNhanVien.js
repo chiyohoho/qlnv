@@ -15,4 +15,9 @@ function DanhSachNhanVien() {
             this.userList.splice(user, 1)
         }
     }
+
+    // this.handleSearch = function (userIndex) {
+    //     const user = this.indexUser(userIndex)
+
+    // }
 }
