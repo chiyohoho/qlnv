@@ -275,27 +275,15 @@ const toggleButton = (dieuKien) => {
 }
 
 const searchUser = () => {
-    let userSearchContent = searchUserInput.value
-    let listUserLocalStorage = []
-    let newArray = []
-
-    if (localStorage.getItem('DSNV') !== null) {
-        listUserLocalStorage = JSON.parse(localStorage.getItem('DSNV'));
-    }
-
+    let userSearchContent = searchUserInput.value.toLowerCase();
+    let UserList = userData.userList;
 
     if (userSearchContent !== '') {
-        const index = userData.indexUser(userSearchContent);
-        const userNeedEdit = listUserLocalStorage[index];
-
-        if (userNeedEdit) {
-            newArray.push(userNeedEdit);
-        }
-    } else {
-        newArray = listUserLocalStorage;
+        UserList = UserList.filter((user) => {
+            return user.username.toLowerCase().includes(userSearchContent);
+        });
     }
-
-    showUI(newArray);
-}
+    showUI(UserList);
+};
 searchUserBtn.addEventListener('click', searchUser)
 searchUserInput.addEventListener('keyup', searchUser)
