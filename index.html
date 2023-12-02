@@ -104,7 +104,7 @@
 			</nav>
 
 
-			<div class="container">
+			<div class="container" style="max-width: 1400px;">
 				<div class="card text-center">
 					<!-- Header -->
 					<div class="card-header myCardHeader">
@@ -135,6 +135,7 @@
 						<table class="table table-bordered table-hover myTable">
 							<thead class="text-primary">
 								<tr>
+									<th>Ảnh đại diện</th>
 									<th class="nowrap">
 										<span class="mr-1">Tài khoản</span>
 										<i class="fa fa-arrow-up" id="SapXepTang"></i>
@@ -176,8 +177,10 @@
 		<div class="modal-dialog">
 			<div class="modal-content">
 
-				<header class="head-form mb-0">
+				<header class="head-form mb-0 d-flex px-2">
 					<h2 id="header-title">Thêm nhân viên</h2>
+					<img id="avatar_nv" src="" alt=""
+						style="width: 100px; height: 100px; display: none; border-radius: 5px;">
 				</header>
 
 				<!-- Modal Header -->
@@ -283,6 +286,18 @@
 									placeholder="Giờ làm việc">
 							</div>
 							<span class="sp-thongbao" id="tbGiolam"></span>
+						</div>
+
+						<div class="form-group">
+							<div class="input-group">
+								<div class="input-group-prepend">
+									<span class="input-group-text"><i class="fa fa-user-o"
+											aria-hidden="true"></i></span>
+								</div>
+								<input type="text" name="avatar" id="avatar" class="form-control input-sm"
+									placeholder="Ảnh đại diện">
+							</div>
+							<span class="sp-thongbao" id="tbAvatar"></span>
 						</div>
 
 					</form>

@@ -8,13 +8,16 @@ const userDate = callElement("#datepicker")
 const userSalary = callElement("#luongCB")
 const userPosition = callElement("#chucvu")
 const userOnDuty = callElement("#gioLam")
+const userAvatar = callElement('#avatar')
 
 const btnAddUser = callElement("#btnThemNV")
 const btnClose = callElement("#btnDong")
+const btnUpdate = callElement('#btnSuaNV')
 const searchUserInput = callElement("#searchName")
 const searchUserBtn = callElement('#btnTimNV')
+const titleModal = callElement('#header-title')
+const avatarModal = callElement('#avatar_nv')
 
-const tbFullName = callElement("#tbTKNV");
 const showUserList = callElement("#tableDanhSach")
 const validation = new Validation()
 const userData = new DanhSachNhanVien()
@@ -32,6 +35,7 @@ const addUserToList = () => {
     let newSalary = userSalary.value
     let newPosition = userPosition.value
     let newOnDuty = userOnDuty.value
+    let newAvatar = userAvatar.value
 
     let isValid = false
 
@@ -43,21 +47,22 @@ const addUserToList = () => {
     isValid &= validation.checkEmpty(newSalary, 'tbLuongCB', 'Vui lòng nhập lương', 'luongCB') && validation.checkSalary(newSalary, 'tbLuongCB', 'Vui lòng chỉ nhập số', 'luongCB')
     isValid &= validation.checkEmpty(newPosition, 'tbChucVu', 'Vui lòng chọn chức vụ', 'chucvu')
     isValid &= validation.checkEmpty(newOnDuty, 'tbGiolam', 'Vui lòng nhập giờ làm việc', 'gioLam') && validation.checkOnDuty(newOnDuty, 'tbGiolam', 'Vui lòng nhập giờ làm từ 160 đến 200', 'gioLam')
+    isValid &= validation.checkEmpty(newAvatar, 'tbAvatar', 'Vui lòng bổ sung hình ảnh', 'avatar') && validation.checkAvatar(newAvatar, 'tbAvatar', 'Link ảnh không hợp lệ', 'avatar')
 
     if (isValid) {
-        const newUser = new UserList(newFullName, newUserName, newEmail, newPassword, newValidate, newSalary, newPosition, newOnDuty)
+        const newUser = new UserList(newFullName, newUserName, newEmail, newPassword, newValidate, newSalary, newPosition, newOnDuty, newAvatar)
         newUser.totalSalary = newUser.calculateSalary()
         newUser.rank = newUser.setRank()
         userData.addUser(newUser)
         setLocalStorage(userData.userList)
         showUI(userData.userList)
         alert(`Đã thêm thành công nhân viên ${newUser.username}`)
-        callElement('#btnDong').click()
+        btnClose.click()
     }
 
 }
 btnAddUser.addEventListener("click", addUserToList)
-callElement('#btnDong').addEventListener('click', function () {
+btnClose.addEventListener('click', function () {
     refreshInput('tbTKNV', 'tknv')
     refreshInput('tbTen', 'name')
     refreshInput('tbEmail', 'email')
@@ -66,9 +71,14 @@ callElement('#btnDong').addEventListener('click', function () {
     refreshInput('tbLuongCB', 'luongCB')
     refreshInput('tbChucVu', 'chucvu')
     refreshInput('tbGiolam', 'gioLam')
+    refreshInput('tbAvatar', 'avatar')
     callElement('#form_input').reset()
     toggleInput(true)
     toggleButton(false)
+
+    callElement('.modal').classList.remove('show')
+    callElement('.modal').style.display = 'none'
+    titleModal.innerHTML = `Thêm nhân viên`
 })
 
 const refreshInput = (text, border) => {
@@ -82,16 +92,19 @@ const showUI = (userData) => {
     userData.map((user) => {
         str += `
             <tr>
-                    <td>${user.username}</td>
-                    <td>${user.fullname}</td>
-                    <td>${user.email}</td>
-                    <td>${user.validate}</td>
-                    <td>${user.position}</td>
-                    <td>${user.totalSalary}</td>
-                    <td>${user.rank}</td>
+                    <td>
+                    <img id="avatar_nv" src="${user.avatar}" alt="" style="width: 40px; height: 40px;">
+                    </td>
+                    <td style="line-height:40px">${user.username}</td>
+                    <td style="line-height:40px">${user.fullname}</td>
+                    <td style="line-height:40px">${user.email}</td>
+                    <td style="line-height:40px">${user.validate}</td>
+                    <td style="line-height:40px">${user.position}</td>
+                    <td style="line-height:40px">${user.totalSalary}</td>
+                    <td style="line-height:40px">${user.rank}</td>
                     <td class="d-flex"> 
                     <button onclick = "removeUser('${user.username}')" class="btn btn-danger mx-1">Xoá</button>
-                    <button onclick="checkUser('${user.username}')" class="btn btn-success mx-1" data-toggle="modal" data-target="#myModal">Sửa</button>
+                    <button onclick="checkUser('${user.username}')" class="btn btn-success mx-1">Sửa</button>
                     </td>
                 </tr>
             `
@@ -116,53 +129,71 @@ const removeUser = (user) => {
 }
 
 const checkUser = (user) => {
-    toggleButton(true)
-    let listUserLocalStorage = []
-    if (localStorage.getItem('DSNV') !== null) {
-        listUserLocalStorage = JSON.parse(localStorage.getItem('DSNV'))
-    }
+    const index = userData.indexUser(user);
+    const userList = userData.userList
 
-    const index = userData.indexUser(user)
-    const userNeedEdit = listUserLocalStorage[index]
+    if (userList.length > 0) {
+        const userNeedEdit = userList[index];
+        toggleInput(false, userNeedEdit.position)
+        toggleButton(true)
 
-    userFullName.value = userNeedEdit.fullname
-    userName.value = userNeedEdit.username
-    userEmail.value = userNeedEdit.email
-    userPassword.value = userNeedEdit.password
-    userDate.value = userNeedEdit.validate
-    userSalary.value = userNeedEdit.salary
-    userPosition.value = userNeedEdit.position
-    userOnDuty.value = userNeedEdit.onduty
+        userFullName.value = userNeedEdit.fullname;
+        userName.value = userNeedEdit.username;
+        userEmail.value = userNeedEdit.email;
+        userPassword.value = userNeedEdit.password;
+        userDate.value = userNeedEdit.validate;
+        userSalary.value = userNeedEdit.salary;
+        userPosition.value = userNeedEdit.position;
+        userOnDuty.value = userNeedEdit.onduty;
+        userAvatar.value = userNeedEdit.avatar
 
-    toggleInput(false)
-
-    const btnSuaNV = callElement('#btnSuaNV');
-    if (!btnSuaNV.onclick) {
-        btnSuaNV.onclick = function () {
-            const userUpdated = new UserList(
-                userFullName.value,
-                userName.value,
-                userEmail.value,
-                userPassword.value,
-                userDate.value,
-                userSalary.value,
-                userPosition.value,
-                userOnDuty.value);
-
-            userUpdated.calculateSalary();
-            userUpdated.setRank();
-
-            listUserLocalStorage[index] = userUpdated
-            localStorage.setItem('DSNV', JSON.stringify(listUserLocalStorage))
-            alert(`Đã chỉnh sửa thành công nhân viên ${userUpdated.username}`)
-            showUI(listUserLocalStorage)
-            callElement('#btnDong').click()
-            toggleInput(true)
-        };
+        titleModal.innerHTML = `Chỉnh sửa nhân viên ${userNeedEdit.username}`
+        avatarModal.src = `${userNeedEdit.avatar}`
+        avatarModal.style.display = 'block'
+        callElement('.modal').classList.add('show')
+        callElement('.modal').style.display = 'block'
+        btnClose.addEventListener('click', function () {
+            avatarModal.style.display = 'none'
+            btnClose.click()
+        })
     }
 }
 
-const toggleInput = (dieuKien) => {
+const editUser = () => {
+    const newFullName = userFullName.value
+    const newUserName = userName.value
+    const newEmail = userEmail.value
+    const newPassword = userPassword.value
+    const newValidate = userDate.value
+    const newSalary = userSalary.value
+    const newPosition = userPosition.value
+    const newOnDuty = userOnDuty.value
+    const newAvatar = userAvatar.value
+
+
+    let isValid = false
+    isValid = validation.checkEmpty(newEmail, 'tbEmail', 'Vui lòng nhập email', 'email') && validation.checkEmail(newEmail, 'tbEmail', 'Định dạng Email không đúng', 'email')
+    isValid &= validation.checkEmpty(newPassword, 'tbMatKhau', 'Vui lòng nhập mật khẩu', 'password') && validation.checkPassword(newPassword, 'tbMatKhau', 'Mật khẩu phải bao gồm 1 chữ ghi hoa, 1 chữ số, 1 ký tự đặc biệt, tối thiểu 8 ký tự và tối đa 16 ký tự', 'password')
+    isValid &= validation.checkEmpty(newValidate, 'tbNgay', 'Vui lòng nhập ngày', 'datepicker')
+    isValid &= validation.checkEmpty(newSalary, 'tbLuongCB', 'Vui lòng nhập lương', 'luongCB') && validation.checkSalary(newSalary, 'tbLuongCB', 'Vui lòng chỉ nhập số', 'luongCB')
+    isValid &= validation.checkEmpty(newPosition, 'tbChucVu', 'Vui lòng chọn chức vụ', 'chucvu')
+    isValid &= validation.checkEmpty(newOnDuty, 'tbGiolam', 'Vui lòng nhập giờ làm việc', 'gioLam') && validation.checkOnDuty(newOnDuty, 'tbGiolam', 'Vui lòng nhập giờ làm từ 160 đến 200', 'gioLam')
+    isValid &= validation.checkEmpty(newAvatar, 'tbAvatar', 'Vui lòng bổ sung hình ảnh', 'avatar') && validation.checkAvatar(newAvatar, 'tbAvatar', 'Link ảnh không hợp lệ', 'avatar')
+
+    if (isValid) {
+        userData.indexUser(newUserName);
+        const userUpdated = new UserList(newFullName, newUserName, newEmail, newPassword, newValidate, newSalary, newPosition, newOnDuty, newAvatar)
+        userUpdated.totalSalary = userUpdated.calculateSalary()
+        userUpdated.rank = userUpdated.setRank()
+        userData.userUpdate(userUpdated)
+        showUI(userData.userList)
+        setLocalStorage(userData.userList)
+        btnClose.click()
+    }
+}
+btnUpdate.addEventListener('click', editUser)
+
+const toggleInput = (dieuKien, position) => {
     if (dieuKien) {
         userFullName.disabled = false
         userName.disabled = false
@@ -172,15 +203,64 @@ const toggleInput = (dieuKien) => {
         userSalary.disabled = false
         userPosition.disabled = false
         userOnDuty.disabled = false
+
+        userFullName.style.cursor = 'initial'
+        userName.style.cursor = 'initial'
+        userEmail.style.cursor = 'initial'
+        userPassword.style.cursor = 'initial'
+        userDate.style.cursor = 'initial'
+        userPosition.style.cursor = 'initial'
+        userSalary.style.cursor = 'initial'
+        userOnDuty.style.cursor = 'initial'
     } else {
-        userFullName.disabled = true
-        userName.disabled = true
-        userEmail.disabled = true
-        userPassword.disabled = false
-        userDate.disabled = true
-        userSalary.disabled = false
-        userPosition.disabled = false
-        userOnDuty.disabled = false
+        if (position === 'Sếp') {
+            userFullName.disabled = true
+            userName.disabled = true
+            userEmail.disabled = false
+            userPassword.disabled = false
+            userDate.disabled = true
+            userSalary.disabled = false
+            userPosition.disabled = false
+            userOnDuty.disabled = false
+
+            userFullName.style.cursor = 'no-drop'
+            userName.style.cursor = 'no-drop'
+            userDate.style.cursor = 'no-drop'
+        } else if (position === 'Trưởng phòng') {
+            userFullName.disabled = true
+            userName.disabled = true
+            userEmail.disabled = true
+            userPassword.disabled = true
+            userDate.disabled = true
+            userSalary.disabled = false
+            userPosition.disabled = true
+            userOnDuty.disabled = false
+
+            userFullName.style.cursor = 'no-drop'
+            userName.style.cursor = 'no-drop'
+            userEmail.style.cursor = 'no-drop'
+            userPassword.style.cursor = 'no-drop'
+            userDate.style.cursor = 'no-drop'
+            userPosition.style.cursor = 'no-drop'
+        } else {
+            userFullName.disabled = true
+            userName.disabled = true
+            userEmail.disabled = true
+            userPassword.disabled = true
+            userDate.disabled = true
+            userSalary.disabled = true
+            userPosition.disabled = true
+            userOnDuty.disabled = true
+
+            userFullName.style.cursor = 'no-drop'
+            userName.style.cursor = 'no-drop'
+            userEmail.style.cursor = 'no-drop'
+            userPassword.style.cursor = 'no-drop'
+            userDate.style.cursor = 'no-drop'
+            userPosition.style.cursor = 'no-drop'
+            userSalary.style.cursor = 'no-drop'
+            userOnDuty.style.cursor = 'no-drop'
+        }
     }
 }
 
@@ -192,7 +272,6 @@ const toggleButton = (dieuKien) => {
         callElement('#btnThemNV').removeAttribute("disabled")
         callElement('#btnSuaNV').setAttribute("disabled", true)
     }
-
 }
 
 const searchUser = () => {

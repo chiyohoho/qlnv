@@ -1,4 +1,4 @@
-function UserList(fullname, username, email, password, validate, salary, position, onduty) {
+function UserList(fullname, username, email, password, validate, salary, position, onduty, avatar) {
     this.fullname = fullname;
     this.username = username;
     this.email = email;
@@ -9,6 +9,7 @@ function UserList(fullname, username, email, password, validate, salary, positio
     this.onduty = onduty;
     this.totalSalary = 0;
     this.rank = "";
+    this.avatar = avatar
 
     this.calculateSalary = function () {
         this.totalSalary = 0;

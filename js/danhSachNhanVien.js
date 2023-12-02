@@ -16,8 +16,42 @@ function DanhSachNhanVien() {
         }
     }
 
-    // this.handleSearch = function (userIndex) {
-    //     const user = this.indexUser(userIndex)
-
-    // }
+    this.userUpdate = function (userIndex) {
+        const user = this.indexUser(userIndex.username)
+        if (user !== -1) {
+            this.userList[user] = userIndex
+        }
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

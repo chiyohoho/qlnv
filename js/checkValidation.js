@@ -125,6 +125,22 @@ function Validation() {
         }
     }
 
+    this.checkAvatar = function (avatar, id, content, input) {
+        const getElementID = this.domElement(id);
+        const regex = /^(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\\+~#?&//=]{2,256}\.[a-z]{2,6}(\/[-a-zA-Z0-9@:%._\\+~#?&//=]*)?(\?[-a-zA-Z0-9@:%._\\+~#?&//=]*)?$/;
+        if (regex.test(avatar)) {
+            getElementID.style.display = 'none';
+            getElementID.innerHTML = '';
+            this.changeColor(input, true)
+            return true
+        } else {
+            getElementID.style.display = 'block';
+            getElementID.innerHTML = content;
+            this.changeColor(input, false)
+            return false;
+        }
+    }
+
     this.changeColor = function (input, isValid) {
         const getElementID = this.domElement(input);
         if (getElementID) {
