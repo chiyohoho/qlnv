@@ -93,7 +93,7 @@ const showUI = (userData) => {
         str += `
             <tr>
                     <td>
-                    <img id="avatar_nv" src="${user.avatar}" alt="" style="width: 40px; height: 40px;">
+                    <img id="avatar_nv" src="${user.avatar}" alt="" style="width: 40px; height: 40px; border-radius:100px">
                     </td>
                     <td style="line-height:40px">${user.username}</td>
                     <td style="line-height:40px">${user.fullname}</td>
@@ -170,7 +170,6 @@ const editUser = () => {
     const newOnDuty = userOnDuty.value
     const newAvatar = userAvatar.value
 
-
     let isValid = false
     isValid = validation.checkEmpty(newEmail, 'tbEmail', 'Vui lòng nhập email', 'email') && validation.checkEmail(newEmail, 'tbEmail', 'Định dạng Email không đúng', 'email')
     isValid &= validation.checkEmpty(newPassword, 'tbMatKhau', 'Vui lòng nhập mật khẩu', 'password') && validation.checkPassword(newPassword, 'tbMatKhau', 'Mật khẩu phải bao gồm 1 chữ ghi hoa, 1 chữ số, 1 ký tự đặc biệt, tối thiểu 8 ký tự và tối đa 16 ký tự', 'password')
@@ -181,7 +180,6 @@ const editUser = () => {
     isValid &= validation.checkEmpty(newAvatar, 'tbAvatar', 'Vui lòng bổ sung hình ảnh', 'avatar') && validation.checkAvatar(newAvatar, 'tbAvatar', 'Link ảnh không hợp lệ', 'avatar')
 
     if (isValid) {
-        userData.indexUser(newUserName);
         const userUpdated = new UserList(newFullName, newUserName, newEmail, newPassword, newValidate, newSalary, newPosition, newOnDuty, newAvatar)
         userUpdated.totalSalary = userUpdated.calculateSalary()
         userUpdated.rank = userUpdated.setRank()
